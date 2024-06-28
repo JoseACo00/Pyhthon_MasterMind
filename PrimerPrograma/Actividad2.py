@@ -17,6 +17,6 @@ print("\nActividad 2 \n ___________________________________")
 print ("VAMOS A CONVERTIR LAS LIBRAS DE UN CLIENTE A EUROS")
 libras = float(input("Dime los cuantas libras quire cambiar el cliente: "))
 cambioEuros = float(input("DIME A CUANTO ESTA EL CAMBIO AHORA "))
-#CALCULAR LA CONVERTSION
+#CALCULAR LA CONVERSION
 resultado = libras * cambioEuros
 print("El cambio de divisa de {}".format(libras),"libras a euros es: {}".format(resultado), "€")
