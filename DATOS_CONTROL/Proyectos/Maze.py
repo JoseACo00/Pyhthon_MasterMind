@@ -12,16 +12,49 @@ import readchar
 POS_X = 0
 POS_Y = 1
 
-MAP_WIDTH = 20
-MAP_HEIGHT = 15
+# MAP_WIDTH = 20 SE VA CALCULAR AHORA DEPENDIENTO DE COMO SE A EL OBSTACLE MAPPS
+# MAP_HEIGHT = 15
 
 NUM_MAX_OBJECTS_MAPS = 11
+
+#DRAW THE MAP  OBSTACLE ANDA AFTER IT WILL BE A LIST, BROKEN THIS STRING
+obstacle_Definition ="""\
+######   ###########
+                 ###
+#####    ###     ###
+#####            ###
+##########         #
+###            #####
+########        ####
+#############    ###
+#####          #####
+########     #######
+#####      #########
+######   ###########
+#             ######
+########        ####
+###        #########\
+"""
+
+
 tail_Lenght = 0
 tail = []
 my_position = [3,1]
 end_Game = False #VARIABLE PARA TERMINAR EL JUEGO / EN SWICH SERA FALSE HASTA QUE ESTE UN TRUE QUE SERA FIN DE JEUGO
 map_Objects = []
+
 #END TO VARAIBLES TO THE GAME
+
+
+#CREATE OBSTACLE MAPS (SE PARAR POR CADA ENTER UNA LINEA DISTINTA)
+# obstacle_Definition = obstacle_Definition.split("\n")
+# print(obstacle_Definition)
+#VAMOS A REALIZAR UNA LIST COMPREGENTION
+obstacle_Definition = [list(row)for row in obstacle_Definition.split("\n")]  #I CREATE A LIST OF STRING
+
+MAP_WIDTH = len(obstacle_Definition[0])
+MAP_HEIGHT = len(obstacle_Definition)
+#print(obstacle_Definition)
 
 # Función para limpiar la pantalla
 def clear_screen():
@@ -76,8 +109,9 @@ while not end_Game:
                     end_Game = True
                     break
 
-                    #print("MUERTO")
-
+            # FOR A WHAT A OBSTACLE WITH IN POSITON
+            if obstacle_Definition[cordinate_Y][coordinate_x] == "#":
+                char_to_draw = "#"
 
             print(" {} ".format(char_to_draw), end="")
         print("|")
