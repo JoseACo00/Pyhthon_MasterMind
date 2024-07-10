@@ -18,28 +18,29 @@ POS_Y = 1
 NUM_MAX_OBJECTS_MAPS = 11
 
 #DRAW THE MAP  OBSTACLE ANDA AFTER IT WILL BE A LIST, BROKEN THIS STRING
-obstacle_Definition ="""\
-######   ###########
-                 ###
-#####    ###     ###
-#####            ###
-##########         #
-###            #####
-########        ####
-#############    ###
-#####          #####
-########     #######
-#####      #########
-######   ###########
-#             ######
-########        ####
-###        #########\
+
+obstacle_Definition = """\
+###############################
+#                             #
+# ############  #### #    ### #
+#         ###        ###    # #
+#   ##### ### ##     ###    # #
+#       # ### #    #####    # #
+#     # # ### #     ######### #
+#  ##   # ### # #     # ##### #
+#   #   # ### # ####    ##### #
+### #   # ### # ####    ##### #
+### #   # ##            ##### #
+###     #  ## #     # # ##### #
+### ### #  ## #         ##### #
+#######   ### # # # #         #
+###############################\
 """
 
+my_position = [0, 1]
 
 tail_Lenght = 0
 tail = []
-my_position = [3,1]
 end_Game = False #VARIABLE PARA TERMINAR EL JUEGO / EN SWICH SERA FALSE HASTA QUE ESTE UN TRUE QUE SERA FIN DE JEUGO
 map_Objects = []
 
@@ -50,7 +51,7 @@ map_Objects = []
 # obstacle_Definition = obstacle_Definition.split("\n")
 # print(obstacle_Definition)
 #VAMOS A REALIZAR UNA LIST COMPREGENTION
-obstacle_Definition = [list(row)for row in obstacle_Definition.split("\n")]  #I CREATE A LIST OF STRING
+obstacle_Definition = [list(row) for row in obstacle_Definition.split("\n")]  #I CREATE A LIST OF STRING
 
 MAP_WIDTH = len(obstacle_Definition[0])
 MAP_HEIGHT = len(obstacle_Definition)
@@ -73,34 +74,39 @@ while not end_Game:
     clear_screen()
     # HACER QUE SE GENEERE 10 DE ESTOS A LEATORIAMENTE
     while len(map_Objects) < NUM_MAX_OBJECTS_MAPS:
-        new_Position = [randint(0, MAP_WIDTH), randint(0, MAP_HEIGHT)]
-        if new_Position not in map_Objects and new_Position != my_position:  # ES DISTINTO DE MI LISTA Y DIFERENTE EN MI POSICION INICIAL
+        new_Position = [randint(0, MAP_WIDTH - 1), randint(0, MAP_HEIGHT - 1)]
+
+        if new_Position not in map_Objects and new_Position != my_position and \
+                obstacle_Definition[new_Position[POS_Y]][
+                    new_Position[POS_X]] != "#":  # ES DISTINTO DE MI LISTA Y DIFERENTE EN MI POSICION INICIAL
             map_Objects.append(new_Position)
 
     # DIBUJAR EL MAPA
-    print("+" + "-" * MAP_WIDTH * 3 + "+")
-    for cordinate_Y in range(MAP_HEIGHT):
+    print("+" + "-" * MAP_WIDTH * 2 + "+")
+    for coordinate_Y in range(MAP_HEIGHT):
         print("|", end="")
+
         for coordinate_x in range(MAP_WIDTH):
-            char_to_draw = " "
+            char_to_draw = "  "
             object_in_cell = None
             tell_in_cell_ = None
 
             # DIBUJAR LOS OBJETOS PARA RECOGER
             for map_Object in map_Objects:
-                if map_Object[POS_X] == coordinate_x and map_Object[POS_Y] == cordinate_Y:
-                    char_to_draw = "º"
+                if map_Object[POS_X] == coordinate_x and map_Object[POS_Y] == coordinate_Y:
+                    char_to_draw = " º"
                     object_in_cell = map_Object
 
             # FOR DRAWING THE TAIL OF SNAKE
             for tail_piece in tail:
-                if tail_piece[POS_X] == coordinate_x and tail_piece[POS_Y] == cordinate_Y:
-                    char_to_draw = "@"
+                if tail_piece[POS_X] == coordinate_x and tail_piece[POS_Y] == coordinate_Y:
+                    char_to_draw = " @"
                     tell_in_cell_ = tail_piece
 
             # DRAWING THE POSITION OF USER/SNAKE
-            if my_position[POS_X] == coordinate_x and my_position[POS_Y] == cordinate_Y:
-                char_to_draw = "@"
+            if my_position[POS_X] == coordinate_x and my_position[POS_Y] == coordinate_Y:
+                char_to_draw = " @"
+
                 if object_in_cell:
                     map_Objects.remove(object_in_cell)
                     tail_Lenght += 1
@@ -110,12 +116,12 @@ while not end_Game:
                     break
 
             # FOR A WHAT A OBSTACLE WITH IN POSITON
-            if obstacle_Definition[cordinate_Y][coordinate_x] == "#":
-                char_to_draw = "#"
+            if obstacle_Definition[coordinate_Y][coordinate_x] == "#":
+                char_to_draw = "##"
 
-            print(" {} ".format(char_to_draw), end="")
+            print("{}".format(char_to_draw), end="")
         print("|")
-    print("+" + "-" * MAP_WIDTH * 3 + "+")
+    print("+" + "-" * MAP_WIDTH * 2 + "+")
     # print("TAMAÑO DE COLA : {}".format(tail_Lenght))
     # print("LA COLA : {}".format(tail))
 
@@ -125,34 +131,26 @@ while not end_Game:
     # "/nDIRRECION: ")
     direction = readchar.readchar()
 
+    new_position = None
     # print(direction)
 
     if direction == "w":
-        tail.insert(0, my_position.copy())
-        tail = tail[:tail_Lenght]
-        my_position[POS_Y] -= 1
-        if my_position[POS_Y] < 0:
-            my_position[POS_Y] = MAP_HEIGHT - 1
+        new_position = [my_position[POS_X], (my_position[POS_Y] - 1) % MAP_HEIGHT]
     elif direction == "s":
-        tail.insert(0, my_position.copy())
-        tail = tail[:tail_Lenght]
-        my_position[POS_Y] += 1
-        if my_position[POS_Y] >= MAP_HEIGHT:
-            my_position[POS_Y] = 0
+        new_position = [my_position[POS_X], (my_position[POS_Y] + 1) % MAP_HEIGHT]
     elif direction == "a":
-        tail.insert(0, my_position.copy())
-        tail = tail[:tail_Lenght]
-        my_position[POS_X] -= 1
-        if my_position[POS_X] < 0:
-            my_position[POS_X] = MAP_WIDTH - 1
+        new_position = [(my_position[POS_X] - 1) % MAP_WIDTH, my_position[POS_Y]]
     elif direction == "d":
-        tail.insert(0, my_position.copy())
-        tail = tail[:tail_Lenght]
-        my_position[POS_X] += 1
-        if my_position[POS_X] >= MAP_WIDTH:
-            my_position[POS_X] = 0
+        new_position = [(my_position[POS_X] + 1) % MAP_WIDTH, my_position[POS_Y]]
     elif direction == "t":
         end_Game = True
+
+    if new_position:
+        if obstacle_Definition[new_position[POS_Y]][new_position[POS_X]] != "#":
+            tail.insert(0, my_position.copy())
+            tail = tail[:tail_Lenght]
+            my_position = new_position
+
 
 # Mostrar mensaje de fin del juego
 clear_screen()
