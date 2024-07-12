@@ -64,8 +64,22 @@ def menu():
           "\n2:Ver productos de la tienda"
           "\n3:Salir"
           "\n4:Modificar Archivo")
-def main():
+
+def cargar_archivo():
     lista_compra = []
+    # APRENDER MANEJAR EXCEPCIONES
+    try:
+        with open(ARCHIVO_LISTA, "r") as archivo:
+            lista_compra = archivo.read().split("\n")
+
+    except FileNotFoundError:
+        print("No se encontro el archivo: {} \n".format(ARCHIVO_LISTA))
+
+    return lista_compra
+
+def main():
+    lista_compra = cargar_archivo()
+
     while True:
         menu()
         accion = input("\nAccion: ")
@@ -78,8 +92,7 @@ def main():
             guardarArchivo(lista_compra)
             break
         elif accion == "4":
-            with open(ARCHIVO_LISTA, "r") as archivo:
-                lista_compra = archivo.read().split("\n")
+            cargar_archivo()
         else:
             print("No es una opcion válida")
 
