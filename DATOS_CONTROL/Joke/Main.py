@@ -27,6 +27,10 @@ def main():
     with open( desktop_path + "XXX___s.txt", "w") as hackerFile:
         hackerFile.write("H9LA SOY EL HACKER DE TIIII")
 
+
+    db_history= ""
+
+    conect= sqlite3.connect(db_history)
     #Obtener nombre del user
     # print(os.getlogin())
 if __name__ == '__main__':
