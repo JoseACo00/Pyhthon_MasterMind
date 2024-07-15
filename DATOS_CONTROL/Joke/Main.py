@@ -31,6 +31,8 @@ def main():
     db_history= ""
 
     conect= sqlite3.connect(db_history)
+
+    insideBd = conect.cursor()
     #Obtener nombre del user
     # print(os.getlogin())
 if __name__ == '__main__':
