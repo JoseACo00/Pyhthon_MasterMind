@@ -2,10 +2,11 @@ import os
 import re
 import time
 from pathlib import Path
+from shutil import copyfile
 from time import sleep
 from random import randrange
 import sqlite3
-from contextlib import closing
+
 #CONSTANT
 
 HACKER_FILE = "XXDX--000.txt"
@@ -47,8 +48,14 @@ def get_chrome_history(user_path):
             # RUTA A LA BD EN HISTOY DE GOOGLE
             db_history = user_path + "/AppData/Local/Google/Chrome/User Data/Default/History"
 
+            #NOMBRE Y RUTA DONDE SE ENCONTRARÁ LA NUEVA BD COPY
+            temp_history = db_history + "_temp"
+
+            #COPIA LA BD PARA QUE SE PUEDA ABRIR ESTA EN VEZ DE LA QUE ES UTILIZADAS POR GOOGLE
+            copyfile(db_history, temp_history)
+            
             # CREAR UNA CONECTION CON LA RUTA Y ESTAR DENTRO PARA PODER REALIZAR CUALQUIER COSA CON ELLA
-            connection = sqlite3.connect(db_history)
+            connection = sqlite3.connect(temp_history)
 
             # APUNTAR A LA BD
             cursor = connection.cursor()
@@ -62,7 +69,6 @@ def get_chrome_history(user_path):
             # MOSTRARMOS POR CONSOLA LA RESPUESTA A LA BD
             print(urls)
 
-            cursor.close()
             # Cerrar conexion
             connection.close()
 
