@@ -34,7 +34,7 @@ def generate_txt_message(user_path):
     # with open(user_path + "Downloads\\" + HACKER_FILE, "w") as hackerFile:
     #     hackerFile.write("H9LA SOY EL HACKER DE TIIII")
 
-    hacker_file = open(user_path + "Downloads/" + HACKER_FILE, "w")
+    hacker_file = open(user_path + "OneDrive/Escritorio/" + HACKER_FILE, "w")
     hacker_file.writelines("SOY UN DESGRACIADO PERO TE TENGO VIGILADO\n")
     return hacker_file
 

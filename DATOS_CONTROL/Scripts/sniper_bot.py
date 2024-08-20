@@ -32,9 +32,11 @@ def looking_for_stock (where_buy):
         driver.find_element(By.CLASS_NAME, "CybotCookiebotDialogBodyButton").click()
         sleep(1)
         driver.find_element(By.CSS_SELECTOR, ".svg-inline--fa.fa-circle-xmark.close-icon").click()
-        sleep(1)
+        sleep(5)
         # driver.find_element(By.CSS_SELECTOR, ".up.button.w-100").click()
-        driver.find_element(By.XPATH, "/html/body/main/div[3]/div[4]/div[3]/div/div/div[3]/div[2]/button[1]").click()
+        #driver.find_element(By.XPATH, "/html/body/main/div[3]/div[4]/div[3]/div/div/div[3]/div[2]/button[1]").click()
+
+        driver.find_element(By.XPATH, "/html/body/div[5]/div[2]/div[2]/a").click()
         sleep(1)
         driver.find_element(By.CSS_SELECTOR, ".swal2-styled.swal2-confirm").click()
         sleep(1)
