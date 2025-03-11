@@ -36,7 +36,12 @@ while accion != "S":
         print("LISTA DE LA COMPRA ACTUALIZADA: ",(lista_Compra))
 
     elif accion == "W":
-        print("LISTA DE LA COMPRA ACTUALES: \n",lista_Compra)
+        if len(lista_Compra) == 0:
+            print('No hay productos en la compra')
+        else:
+            print("LISTA DE LA COMPRA ACTUALES: \n")
+            for i, producto in enumerate(lista_Compra, start=1):
+                print(f"{i}. {producto}")
 
     elif accion == "S":
         break
